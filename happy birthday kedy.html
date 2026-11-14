@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Benim Gözümdeki Sen</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+  font-family:Georgia, 'Times New Roman', serif;
+  background:
+    radial-gradient(circle at 50% 20%, #2a1424 0%, #120d15 38%, #07070a 78%);
+  color:#e8dce5; padding:22px; overflow-x:hidden;
+}
+body:before{
+  content:""; position:fixed; inset:0; pointer-events:none; opacity:.12;
+  background-image:radial-gradient(#fff 0.7px,transparent 0.7px);
+  background-size:7px 7px;
+}
+
+.card{
+  width:min(620px,100%); background:rgba(13,10,16,.93);
+  border:1px solid #4a3043; border-radius:4px; padding:30px;
+  box-shadow:0 20px 80px #000c, inset 0 0 45px #4b17350c;
+  position:relative;
+}
+.card:before,.card:after{
+  position:absolute; color:#79516d; font-size:18px;
+}
+.card:before{content:"✦"; top:12px; left:15px}
+.card:after{content:"✦"; bottom:12px; right:15px}
+
+h1{
+  font-size:30px; margin:0 0 10px; letter-spacing:2px;
+  color:#ead7e5; text-shadow:0 0 18px #9d527e66;
+}
+.sub{color:#9e8799;line-height:1.5;margin-bottom:28px;font-style:italic}
+.progress{height:6px;background:#251a23;border-radius:10px;margin-bottom:25px}
+.bar{height:100%;width:0;background:#ddd;border-radius:10px;transition:.3s}
+.qnum{font-size:13px;color:#888894;margin-bottom:10px}
+.question{font-size:22px;line-height:1.35;margin-bottom:20px}
+.option{
+  width:100%; text-align:left; padding:15px 16px; margin:9px 0;
+  background:#171119; color:#e8dce5; border:1px solid #3d2938; border-radius:3px;
+  cursor:pointer; font-size:15px; transition:.15s;
+}
+.option:hover{border-color:#8b587b; transform:translateY(-1px); box-shadow:0 0 15px #8b587b22}
+.option.correct{border-color:#aaa;background:#291d27}
+.option.wrong{border-color:#555;background:#17171e;opacity:.7}
+.option:disabled{cursor:default}
+.feedback{min-height:23px;margin-top:15px;color:#9f8b9a;font-size:14px}
+.next{
+  display:none; margin-top:18px; width:100%; padding:14px; border:0;
+  border-radius:12px; background:#eee;color:#101014;font-weight:700;cursor:pointer;
+}
+.result{text-align:center;display:none}
+.score{font-size:58px;font-weight:800;margin:20px 0 5px}
+.percent{font-size:18px;color:#aaa;margin-bottom:28px}
+.result h2{font-size:24px;margin-bottom:10px}
+.result p{color:#a5a5af;line-height:1.6}
+.restart{margin-top:20px;padding:12px 22px;border:1px solid #444;background:transparent;color:#eee;border-radius:10px;cursor:pointer}
+#music{
+  position:absolute; right:18px; top:15px; background:transparent; border:0;
+  color:#9d718f; font-size:22px; cursor:pointer; opacity:.8;
+}
+#music:hover{opacity:1;text-shadow:0 0 12px #b56f9d}
+
+.intro{text-align:center}
+.tiny{font-size:10px;letter-spacing:4px;color:#806079;margin-bottom:18px}
+.introtext{color:#aa94a4;line-height:1.8;font-style:italic;margin:0 auto 22px}
+.music-note{
+  border:1px solid #4a3043;background:#120d14;padding:17px 16px;margin:18px 0 24px;
+  border-radius:4px;box-shadow:inset 0 0 28px #7b315512;
+}
+.music-title{font-size:15px;color:#d8bfd1;margin-bottom:6px}
+.music-help{font-size:12px;color:#887583;line-height:1.6}
+.music-help b{color:#c391b2}
+.start-music,.begin{
+  margin-top:13px;border:1px solid #67455c;background:#211621;color:#e7d6e2;
+  padding:11px 17px;border-radius:3px;cursor:pointer;font-family:inherit;
+}
+.start-music:hover,.begin:hover{background:#2d1c2c;box-shadow:0 0 18px #9d527e22}
+.spotify{display:block;color:#76536b;font-size:11px;margin-top:10px;text-decoration:none}
+.spotify:hover{color:#b78aa9}
+.rewards{
+  text-align:left;border-top:1px solid #382635;padding-top:19px;
+}
+.reward-head{text-align:center;font-size:16px;color:#d9c3d3}
+.reward-sub{text-align:center;color:#75636f;font-size:11px;margin:5px 0 14px}
+.reward{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:11px 12px;margin:6px 0;background:#151016;border:1px solid #30212d;
+  border-radius:3px;font-size:12px;
+}
+.reward span{color:#916a84;min-width:45px}
+.reward b{color:#cdb6c7;font-weight:normal}
+.begin{width:100%;margin-top:21px;background:#d3bdcd;color:#140e13;font-weight:bold}
+#quiz{animation:fade .45s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.love{margin-top:26px;color:#c99ab8;font-size:14px;font-style:italic;line-height:1.6;text-shadow:0 0 14px #a0507a44}
+</style>
+</head>
+<body>
+<div class="card">
+
+  <div id="intro" class="intro">
+    <div class="tiny">14.11.2026 · FOR YOU</div>
+    <h1>Benim Gözümdeki Sen</h1>
+    <p class="introtext">Doğum gününde küçük bir oyun.<br>
+    Bakalım seni benim gözümden ne kadar tanıyorsun?</p>
+
+    <div class="music-note">
+      <div class="music-title">Önce şarkıyı başlat</div>
+      <div class="music-help">Sağ üstteki <b>♫</b> düğmesine dokun. Şarkı çalarken testi çözebilirsin.</div>
+      <button class="start-music" onclick="toggleMusic()">♫ Şarkıyı başlat</button>
+      <a class="spotify" href="https://open.spotify.com/track/0R7BWzdXe7BVtGgFV6jqay" target="_blank">Spotify'da aç</a>
+    </div>
+
+    <div class="rewards">
+      <div class="reward-head">Küçük ödül listesi</div>
+      <div class="reward-sub">Sonucuna göre ödülünü alacaksın.</div>
+      <div class="reward"><span>0–3</span><b>Tokat</b></div>
+      <div class="reward"><span>4–6</span><b>Yanaktan öpücük</b></div>
+      <div class="reward"><span>7–8</span><b>Dudaktan istediğin kadar öpücük</b></div>
+      <div class="reward"><span>9</span><b>İstediğin o şeyi izlemek</b></div>
+      <div class="reward"><span>10</span><b>İstediğin bir şeyi yaptırmak</b></div>
+    </div>
+
+    <button class="begin" onclick="beginQuiz()">Teste başla</button>
+  </div>
+
+  <button id="music" onclick="toggleMusic()">♫</button>
+  <div id="quiz" style="display:none">
+    <h1>Benim Gözümdeki Sen</h1>
+    <div class="sub">Seni benim gözümden ne kadar tanıyorsun?</div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div class="qnum" id="qnum"></div>
+    <div class="question" id="question"></div>
+    <div id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next" id="next">Devam et</button>
+  </div>
+
+  <div class="result" id="result">
+    <div class="qnum">SONUÇ</div>
+    <div class="score" id="score"></div>
+    <div class="percent" id="percent"></div>
+    <h2 id="title"></h2>
+    <p id="message"></p><div class="love">ne olursa olsun seni herşeyden çok seviyorum bebeğim</div>
+    <button class="restart" onclick="restart()">Tekrar çöz</button>
+  </div>
+</div>
+
+<script>
+const questions = [
+{q:"Sende en sevdiğim şey ne?", a:["Gülüşün","Gözlerin","Sesin","Ellerinin hareketleri"], c:1},
+{q:"Sende en çok hangi özelliğini seviyorum?", a:["Çok sakin olmanı","Bilgili olup aynı zamanda mizah yapabilmeni","Çok romantik olmanı","İnatçı olmanı"], c:1},
+{q:"Sence senin hangi özelliğine karşı zaafım var?", a:["Kıskançlığına","İnatçılığına","Tribime katlanmana","Sessiz kaldığın zamanlara"], c:2},
+{q:"İlk başta sende en çok ne dikkatimi çekmişti?", a:["Görünüşün","Bana olan tavırların","Konuşma şeklin","Ses tonun"], c:1},
+{q:"Beni en kolay nasıl mutlu edersin?", a:["Bana uzun uzun iltifat ederek","Birlikte film izleyerek","Komik şakalar yapıp beni öperek","Bana hediye alarak"], c:2},
+{q:"Sende en sevdiğim küçük detay ne?", a:["Güldüğündeki sesin","İnsanların taklidini yaparkenki mimiklerin","Sinirlendiğindeki bakışın","Konuşurken ellerini kullanman"], c:1},
+{q:"Hangi huyun beni en çok sinirlendiriyor?", a:["Geç cevap vermen","Fazla soru sorman","3 saniye kuralı koyman","Bazen fazla sessiz olman"], c:2},
+{q:"Sence birlikte yaşadığımız hangi anı benim için en değerlisi?", a:["İlk konuştuğumuz gün","İlk buluşmamız","Ölene kadar güldüğümüz an","İlk kez birlikte fotoğraf çekildiğimiz gün"], c:2},
+{q:"İnsanların sende ilk bakışta fark etmediği ama benim fark ettiğim şey ne?", a:["Aslında çok duygusal olman","Sakin görünsen de sert olman","Çok kıskanç olman","Aslında utangaç olman"], c:1},
+{q:"Zor zamanlarda sende en çok hangi özelliğini seviyorum?", a:["Beni güldürmeye çalışmanı","Hiçbir şey olmamış gibi davranmanı","Zor durumda bile beni düzeltmeye çalışmanı","Bana biraz alan bırakmanı"], c:2}
+];
+
+let i=0, score=0, answered=false;
+let audioCtx=null, timer=null, musicOn=false;
+const melody=[261.63,311.13,349.23,392.00,349.23,311.13,293.66,261.63];
+let note=0;
+function playNote(){
+  if(!audioCtx || !musicOn)return;
+  const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+  o.type="sine"; o.frequency.value=melody[note++%melody.length];
+  g.gain.setValueAtTime(.0001,audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(.045,audioCtx.currentTime+.04);
+  g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+.72);
+  o.connect(g).connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+.75);
+}
+function toggleMusic(){
+  if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  musicOn=!musicOn;
+  $("music").textContent=musicOn?"♫":"♩";
+  document.querySelector(".start-music").textContent=musicOn?"♫ Şarkı çalıyor":"♫ Şarkıyı başlat";
+  if(musicOn){playNote();timer=setInterval(playNote,820)}
+  else {clearInterval(timer)}
+}
+
+const $=id=>document.getElementById(id);
+
+function beginQuiz(){
+  $("intro").style.display="none";
+  $("quiz").style.display="block";
+  render();
+}
+function render(){
+ answered=false;
+ $("qnum").textContent=`Soru ${i+1} / ${questions.length}`;
+ $("bar").style.width=`${(i/questions.length)*100}%`;
+ $("question").textContent=questions[i].q;
+ $("feedback").textContent="";
+ $("next").style.display="none";
+ const box=$("options"); box.innerHTML="";
+ questions[i].a.forEach((x,n)=>{
+   const b=document.createElement("button");
+   b.className="option"; b.textContent=x;
+   b.onclick=()=>answer(n,b);
+   box.appendChild(b);
+ });
+}
+function answer(n,btn){
+ if(answered)return;
+ answered=true;
+ const correct=questions[i].c;
+ document.querySelectorAll(".option").forEach((b,k)=>{
+   b.disabled=true;
+   if(k===correct)b.classList.add("correct");
+ });
+ if(n===correct){
+   score++;
+   $("feedback").textContent="Doğru.";
+ }else{
+   btn.classList.add("wrong");
+   $("feedback").textContent=`Yanlış. Doğru cevap: ${questions[i].a[correct]}`;
+ }
+ $("next").textContent=i===questions.length-1?"Sonucu gör":"Sonraki soru";
+ $("next").style.display="block";
+}
+$("next").onclick=()=>{
+ if(!answered)return;
+ i++;
+ if(i<questions.length) render();
+ else finish();
+};
+function finish(){
+ $("quiz").style.display="none";
+ $("result").style.display="block";
+ $("score").textContent=`${score} / ${questions.length}`;
+ $("percent").textContent=`%${score*10}`;
+ let title,msg;
+ if(score<=3){title="Daha çözülememişsin.";msg="Seni benim gözümden tanımak için daha çok ipucu gerekiyor."}
+ else if(score<=6){title="Seni tanımaya başlamışım.";msg="Beni sende fark ettiğim şeylerin bazılarını yakaladın, ama küçük detaylar hâlâ kaçıyor."}
+ else if(score<=8){title="Beni dinlemişsin.";msg="Sende sevdiğim ve dikkat ettiğim birçok şeyi doğru tahmin ettin."}
+ else if(score===9){title="Seni bayağı çözmüşüm.";msg="Seni nasıl gördüğümü neredeyse benim kadar biliyorsun."}
+ else{title="Benim gözümdeki sen.";msg="Seni anlatırken ne gördüğümü tamamen yakalamışsın. Benden sana saklanan bir detay kalmamış."}
+ $("title").textContent=title;
+ $("message").textContent=msg;
+}
+function restart(){
+ i=0;score=0;$("result").style.display="none";$("intro").style.display="block";$("quiz").style.display="none";
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+render();
+</script>
+</body>
+</html>
